@@ -1,0 +1,21 @@
+buildDir = '.gradle_build'
+
+def projectDir = projectDir
+
+// set custom user properties
+ant.properties['air.sdk'] = AIR_SDK_HOME
+ant.properties['android.sdk'] = ANDROID_HOME
+// override build properties
+ant.properties['actionscript.dir'] = "$projectDir/platform/actionscript"
+ant.properties['default.dir'] = "$projectDir/platform/default"
+ant.properties['android.dir'] = "$projectDir/platform/android"
+ant.properties['output.dir'] = "build"
+ant.properties['output.docs'] = "build/docs"
+// import ant build file
+ant.importBuild 'build.xml'
+
+defaultTasks 'execute'
+
+task execute () {
+    dependsOn "all"
+}
