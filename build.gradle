@@ -5,6 +5,8 @@ project.extensions.create("config", BuildConfig)
 config {
     AIR_SDK_HOME = System.getenv("AIR_SDK_HOME")
     ANDROID_HOME = System.getenv("ANDROID_HOME")
+    resourcesDir = "$projectDir/../configs/android_res_v2"
+    anePath = "$projectDir/../ane"
 }
 
 // set custom user properties
@@ -34,17 +36,19 @@ task cleanRes(type: Delete) {
 
 task copyResources(type: Copy) {
     dependsOn "clean"
-    from "$projectDir/../configs/android_res_v2"
+    from config.resourcesDir
     into "res"
 }
 
 task copyANE(type: Copy) {
     dependsOn "all"
     from "build"
-    into "$projectDir/../ane"
+    into config.anePath
 }
 
 class BuildConfig {
     String AIR_SDK_HOME
     String ANDROID_HOME
+    String resourcesDir
+    String anePath
 }
