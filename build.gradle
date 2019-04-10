@@ -1,21 +1,50 @@
-buildDir = '.gradle_build'
+buildDir = ".gradle_build"
 
-def projectDir = projectDir
+project.extensions.create("config", BuildConfig)
+
+config {
+    AIR_SDK_HOME = System.getenv("AIR_SDK_HOME")
+    ANDROID_HOME = System.getenv("ANDROID_HOME")
+}
 
 // set custom user properties
-ant.properties['air.sdk'] = AIR_SDK_HOME
-ant.properties['android.sdk'] = ANDROID_HOME
+ant.properties["air.sdk"] = config.AIR_SDK_HOME
+ant.properties["android.sdk"] = config.ANDROID_HOME
 // override build properties
-ant.properties['actionscript.dir'] = "$projectDir/platform/actionscript"
-ant.properties['default.dir'] = "$projectDir/platform/default"
-ant.properties['android.dir'] = "$projectDir/platform/android"
-ant.properties['output.dir'] = "build"
-ant.properties['output.docs'] = "build/docs"
+ant.properties["actionscript.dir"] = "$projectDir/platform/actionscript"
+ant.properties["default.dir"] = "$projectDir/platform/default"
+ant.properties["android.dir"] = "$projectDir/platform/android"
+ant.properties["output.dir"] = "build"
+ant.properties["output.docs"] = "build/docs"
 // import ant build file
-ant.importBuild 'build.xml'
+ant.importBuild "build.xml"
 
-defaultTasks 'execute'
+all.mustRunAfter "copyResources"
+clean.dependsOn "cleanRes"
 
-task execute () {
+defaultTasks "execute"
+
+task execute() {
+    dependsOn "copyResources", "all", "copyANE"
+}
+
+task cleanRes(type: Delete) {
+    delete fileTree(dir: "res", exclude: "PUT_YOUR_RESOURCES_HERE")
+}
+
+task copyResources(type: Copy) {
+    dependsOn "clean"
+    from "$projectDir/../configs/android_res_v2"
+    into "res"
+}
+
+task copyANE(type: Copy) {
     dependsOn "all"
+    from "build"
+    into "$projectDir/../ane"
+}
+
+class BuildConfig {
+    String AIR_SDK_HOME
+    String ANDROID_HOME
 }
