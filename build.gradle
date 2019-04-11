@@ -1,17 +1,8 @@
 buildDir = ".gradle_build"
 
-project.extensions.create("config", BuildConfig)
-
-config {
-    AIR_SDK_HOME = System.getenv("AIR_SDK_HOME")
-    ANDROID_HOME = System.getenv("ANDROID_HOME")
-    resourcesDir = "$projectDir/../configs/android_res_v2"
-    anePath = "$projectDir/../ane"
-}
-
 // set custom user properties
-ant.properties["air.sdk"] = config.AIR_SDK_HOME
-ant.properties["android.sdk"] = config.ANDROID_HOME
+ant.properties["air.sdk"] = rootProject.AIR_SDK_HOME
+ant.properties["android.sdk"] = rootProject.ANDROID_HOME
 // override build properties
 ant.properties["actionscript.dir"] = "$projectDir/platform/actionscript"
 ant.properties["default.dir"] = "$projectDir/platform/default"
@@ -36,19 +27,12 @@ task cleanRes(type: Delete) {
 
 task copyResources(type: Copy) {
     dependsOn "clean"
-    from config.resourcesDir
+    from rootProject.resourcesDir
     into "res"
 }
 
 task copyANE(type: Copy) {
     dependsOn "all"
     from "build"
-    into config.anePath
-}
-
-class BuildConfig {
-    String AIR_SDK_HOME
-    String ANDROID_HOME
-    String resourcesDir
-    String anePath
+    into rootProject.anePath
 }
