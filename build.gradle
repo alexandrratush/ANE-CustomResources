@@ -19,20 +19,32 @@ defaultTasks "execute"
 
 task execute() {
     dependsOn "copyResources", "all", "copyANE"
+    doLast {
+        println ":ane_resources:" + name
+    }
 }
 
 task cleanRes(type: Delete) {
     delete fileTree(dir: "res", exclude: "PUT_YOUR_RESOURCES_HERE")
+    doLast {
+        println ":ane_resources:" + name
+    }
 }
 
 task copyResources(type: Copy) {
     dependsOn "clean"
     from rootProject.resourcesDir
     into "res"
+    doLast {
+        println ":ane_resources:" + name
+    }
 }
 
 task copyANE(type: Copy) {
     dependsOn "all"
     from "build"
     into rootProject.anePath
+    doLast {
+        println ":ane_resources:" + name
+    }
 }
